@@ -1,30 +1,95 @@
-# React + TypeScript + Vite
+# Eurovision Data Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Eurovision data visualizer application uses data from eurovision-dataset and creates card components where you can check out more info from the song, artist and how did the song perform in Eurovision song contest. The card components also have an embedded video to check the actual performance in the show.
 
-Currently, two official plugins are available:
+Data from the eurovision-dataset spans back to the first Eurovision songcontest held in 1956 back to 2023.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Team
 
-## Expanding the ESLint configuration
+- Frontend: Atte & Jerry
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Backend: Luke
 
-- Configure the top-level `parserOptions` property like this:
+- Design: Atte
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Tech stack
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Frontend
+
+- TS/React/Vite
+
+- Trello for project management
+
+- Figma
+
+- Material UI component library
+
+### Backend
+
+- MongoDB
+
+- Node
+
+### Version control & CI/CD
+
+- Github for remote repository
+
+- Pipeline: Github actions
+
+### Dev tools and libraries
+
+- Axios
+
+- JSON server
+
+- Concurrently
+
+- CORS
+
+- Thunderclient
+
+- D3 library/Chart.js
+
+- material UI
+
+### Unit testing
+
+- Jest
+
+## Page architecture
+
+### Home page:
+
+#### Header
+
+- Filtering options
+
+#### Card container
+
+- Cards
+
+- Artist thumbnail / Song video thumbnail
+
+- Song title
+
+- Nationality/Flag icon
+
+### Single Card Page:
+
+#### Single card
+
+- Artist name
+
+- Song title
+
+- Lyricist
+
+- Composer
+
+- Points data?
+
+- Embedded Youtube video
+
+### Statistics page:
+
+- Fancy data on how different countries have performed in the Eurovision Song contest etc.
