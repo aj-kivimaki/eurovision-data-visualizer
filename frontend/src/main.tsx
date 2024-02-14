@@ -6,7 +6,7 @@ import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
 
 const theme = createTheme({
-  palette: {
+  palette: { // palette documentation https://mui.com/material-ui/customization/palette/
     primary: {
       main: "#85F668",
     },
