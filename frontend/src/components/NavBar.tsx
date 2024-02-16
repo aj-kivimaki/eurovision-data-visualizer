@@ -11,6 +11,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const NavBar: React.FC = () => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
+
   return (
     <Box>
       <AppBar
@@ -25,15 +26,7 @@ const NavBar: React.FC = () => {
           </Typography>
           <TextField
             label="Search"
-            variant="outlined"
-            sx={{
-              "& input": { color: "#FFFFFF" },
-              "& input::hover": { borderColor: "#FFFFFF" },
-              "& input::placeholder": { color: "#FFFFFF" },
-              "& input:focus": { borderColor: "#FFFFFF" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#FFFFFF" },
-              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: "primary.main" },
-            }}
+            variant="outlined" 
             focused={isFocused}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
@@ -46,7 +39,7 @@ const NavBar: React.FC = () => {
                 </InputAdornment>
               ),
             }}
-            InputLabelProps={{sx : { color: "#FFFFFF"}}}
+            InputLabelProps={{ sx: { color: "#FFFFFF" } }}
           />
           <Typography sx={{ flexBasis: "33%", textAlign: "right" }}>
             STATISTICS
