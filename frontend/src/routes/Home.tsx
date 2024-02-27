@@ -1,5 +1,6 @@
 import Banner from "../components/Banner";
 import { Box, Typography } from "@mui/material";
+import ArtistCard from "../components/ArtistCard";
 
 const Home: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const Home: React.FC = () => {
         </Box>
         <Box sx={{backgroundColor: "#1c1c1c", color:"#FFFFFF", height: "500px"}}>
             Cards will appear here
+            <ArtistCard></ArtistCard>
         </Box>
     </Box>
   );
