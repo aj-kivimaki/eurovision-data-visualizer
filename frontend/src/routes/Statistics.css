@@ -1,0 +1,9 @@
+.statistics .bar {
+  transition: all 0.15s ease;
+}
+
+.statistics .bar:hover {
+  cursor: pointer;
+  fill: lime;
+  scale: (1.1);
+}
