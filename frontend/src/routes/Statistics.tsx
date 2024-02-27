@@ -37,10 +37,9 @@ const Statistics: React.FC = () => {
   const [year, setYear] = useState<string | null>(null);
   const [countries, setCountries] = useState<SelectType[]>([]);
   const [country, setCountry] = useState<string | null>(null);
-  const [data, setData] = useState<Data[]>([]);
+  const [allData, setAllData] = useState<Data[] | null>(null);
+  const [chartData, setChartData] = useState<Data[] | null>(null);
   const ref = useRef(null);
-
-  console.log(year, country);
 
   // format the data for the <Select> options
   const formatData = useCallback((arr: Set<string> | string[]) => {
@@ -74,7 +73,8 @@ const Statistics: React.FC = () => {
         ];
       })
       .sort((a, b) => (a[1] as number) - (b[1] as number)); // sort, ascending order
-    setData(fetchedData as Data[]);
+    setAllData(fetchedData as Data[]);
+    setChartData(fetchedData as Data[]);
   }, []);
 
   // fetch the data
@@ -87,8 +87,26 @@ const Statistics: React.FC = () => {
       });
   }, [setOptions, setFetchedData]);
 
+  // show data by country or year
+  useEffect(() => {
+    if (!allData) return;
+
+    let filtered: Data[] = [];
+
+    if (country) {
+      filtered = allData.filter((d) => d[0] === country?.toString());
+    } else if (year) {
+      filtered = allData.filter((d) => d[7] === year?.toString());
+    }
+
+    setChartData(filtered);
+  }, [allData, country, year]);
+
   // create the bar chart
   useEffect(() => {
+    d3.select(ref.current).selectAll("svg").remove();
+    if (!chartData) return;
+
     const svg = d3
       .select(ref.current)
       .append("svg")
@@ -108,21 +126,20 @@ const Statistics: React.FC = () => {
 
     const yAxisGroup = graph.append("g").attr("id", "y-axis");
 
-    const max = d3.max(data as Data[], (d) => d[1])!;
+    const max = d3.max(chartData as Data[], (d) => d[1])!;
 
     const y = d3.scaleLinear().domain([0, max]).range([graphHeight, 0]);
 
     const x = d3
       .scaleBand()
-      .domain((data as Data[]).map((d) => d[0]))
+      .domain((chartData as Data[]).map((d) => d[0]))
       .range([0, width])
       .paddingInner(0.1);
 
     graph
       .selectAll("rect")
-      .data(data as Data[])
-      .enter()
-      .append("rect")
+      .data(chartData as Data[])
+      .join("rect")
       .attr("width", x.bandwidth)
       .attr("height", (d) => graphHeight - y(d[1]))
       .attr("fill", "#FF43EC")
@@ -137,7 +154,7 @@ const Statistics: React.FC = () => {
 
     yAxisGroup.call(yAxis);
     xAxisGroup.call(xAxis);
-  }, [data]);
+  }, [chartData]);
 
   return (
     <div className="statistics">
@@ -148,16 +165,24 @@ const Statistics: React.FC = () => {
               <Typography variant="h6">Show results by year</Typography>
               <Select
                 className="select year"
-                onChange={(option) => setYear(option?.value as string)}
+                onChange={(option) => {
+                  setYear(option?.value as string);
+                  setCountry(null);
+                }}
                 options={years}
+                value={years.filter((option) => option.value === year)}
               />
             </Grid>
             <Grid item m={4}>
               <Typography variant="h6">Show results by country</Typography>
               <Select
                 className="select country"
-                onChange={(option) => setCountry(option?.value as string)}
+                onChange={(option) => {
+                  setCountry(option?.value as string);
+                  setYear(null);
+                }}
                 options={countries}
+                value={countries.filter((option) => option.value === country)}
               />
             </Grid>
           </Grid>
