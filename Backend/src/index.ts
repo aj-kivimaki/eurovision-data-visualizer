@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
 import mongoose from "mongoose";
+import EurovisionModel from "./db/eurodata";
 
 require("dotenv").config(); // Load environment variables from .env file
 
@@ -18,6 +19,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 const server = http.createServer(app);
+
+const router = express.Router();
 
 server.listen(8080, () => {
   console.log("Server is running on port http://localhost:8080/");
@@ -33,4 +36,14 @@ mongoose.connection.on("error", (error) => {
 
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB successfully!");
+});
+
+app.get("/eurovision", async (req, res) => {
+  try {
+    const data = await EurovisionModel.find();
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
