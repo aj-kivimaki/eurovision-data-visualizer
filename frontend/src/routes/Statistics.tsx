@@ -7,8 +7,6 @@ import "./Statistics.css";
 // types
 type Data = [string, number, number, number, number, string, string, string];
 
-type ChartData = [string, number];
-
 type Json = [
   {
     to_country: string;
@@ -29,7 +27,7 @@ type SelectType = {
 
 // constants for the bar chart
 const width = 600;
-const height = 300;
+const height = 250;
 const margin = { top: 20, right: 20, bottom: 100, left: 100 };
 const graphWidth = width - margin.left - margin.right;
 const graphHeight = height - margin.top - margin.bottom;
@@ -40,7 +38,8 @@ const Statistics: React.FC = () => {
   const [countries, setCountries] = useState<SelectType[]>([]);
   const [country, setCountry] = useState<string | null>(null);
   const [allData, setAllData] = useState<Data[] | null>(null);
-  const [chartData, setChartData] = useState<ChartData[] | null>(null);
+  const [chartData, setChartData] = useState<Data[] | null>(null);
+  const [hoverData, setHoverData] = useState<Data | null>(null);
   const ref = useRef(null);
 
   // format the data for the <Select> options
@@ -49,24 +48,6 @@ const Statistics: React.FC = () => {
       return { value: c, label: c };
     });
   }, []);
-
-  // format data based on option
-  const formatChartData = useCallback(
-    (data: Data[]) => {
-      const formattedData: ChartData[] = [];
-      console.log(data);
-
-      if (year !== null && country === null) {
-        data.map((c) => formattedData.push([c[0], c[1]]));
-      }
-
-      if (country !== null && year === null) {
-        data.map((c) => formattedData.push([c[7], c[1]]));
-      }
-      setChartData(formattedData);
-    },
-    [country, year]
-  );
 
   // set the <Select> options
   const setOptions = useCallback(
@@ -77,25 +58,49 @@ const Statistics: React.FC = () => {
     [formatData]
   );
 
+  // format data based on option
+  const formatChartData = useCallback(
+    (data: Data[]) => {
+      const formattedData: Data[] = [];
+
+      if (year !== null) {
+        data.map((c) =>
+          formattedData.push([c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7]])
+        );
+      }
+
+      if (country !== null) {
+        data.map((c) =>
+          formattedData.push([c[7], c[1], c[2], c[3], c[4], c[5], c[6], c[0]])
+        );
+      }
+      setChartData(formattedData);
+    },
+    [country, year]
+  );
+
   // filter fetched data
-  const setFetchedData = useCallback((json: Json) => {
-    const fetchedData = (json as Json)
-      .map((d) => {
-        return [
-          d.to_country,
-          d.points_final,
-          d.points_tele_final,
-          d.points_jury_final,
-          d.place_contest,
-          d.performer,
-          d.song,
-          d.year.toString(),
-        ];
-      })
-      .sort((a, b) => (a[1] as number) - (b[1] as number)); // sort, ascending order
-    setAllData(fetchedData as Data[]);
-    formatChartData(fetchedData as Data[]);
-  }, []);
+  const setFetchedData = useCallback(
+    (json: Json) => {
+      const fetchedData = (json as Json)
+        .map((d) => {
+          return [
+            d.to_country,
+            d.points_final,
+            d.points_tele_final,
+            d.points_jury_final,
+            d.place_contest,
+            d.performer,
+            d.song,
+            d.year.toString(),
+          ];
+        })
+        .sort((a, b) => (a[1] as number) - (b[1] as number)); // sort, ascending order
+      setAllData(fetchedData as Data[]);
+      formatChartData(fetchedData as Data[]);
+    },
+    [formatChartData]
+  );
 
   // fetch the data
   useEffect(() => {
@@ -130,8 +135,8 @@ const Statistics: React.FC = () => {
     const svg = d3
       .select(ref.current)
       .append("svg")
-      .attr("width", 750)
-      .attr("height", 280);
+      .attr("width", 800)
+      .attr("height", 200);
 
     const graph = svg
       .append("g")
@@ -146,19 +151,19 @@ const Statistics: React.FC = () => {
 
     const yAxisGroup = graph.append("g").attr("id", "y-axis");
 
-    const max = d3.max(chartData as ChartData[], (d) => d[1])!;
+    const max = d3.max(chartData as Data[], (d) => d[1])!;
 
     const y = d3.scaleLinear().domain([0, max]).range([graphHeight, 0]);
 
     const x = d3
       .scaleBand()
-      .domain((chartData as ChartData[]).map((d) => d[0]))
+      .domain((chartData as Data[]).map((d) => d[0]))
       .range([0, width])
       .paddingInner(0.1);
 
     graph
       .selectAll("rect")
-      .data(chartData as ChartData[])
+      .data(chartData as Data[])
       .join("rect")
       .attr("width", x.bandwidth)
       .attr("height", (d) => graphHeight - y(d[1]))
@@ -166,8 +171,10 @@ const Statistics: React.FC = () => {
       .attr("x", (d) => x(d[0]) as number)
       .attr("y", (d) => y(d[1]))
       .attr("class", "bar")
-      .attr("data-gdp", (d) => d[1])
-      .attr("data-date", (d) => d[0]);
+      .on("mouseover", (_, i) => {
+        setHoverData(i);
+      })
+      .on("mouseout", () => setHoverData(null));
 
     const xAxis = d3.axisBottom(x);
     const yAxis = d3.axisLeft(y).ticks(6);
@@ -176,66 +183,86 @@ const Statistics: React.FC = () => {
     xAxisGroup.call(xAxis);
   }, [chartData]);
 
-  const handleYear = (option) => {
-    setYear(option?.value as string);
-    setCountry(null);
-  };
-
-  const handleCountry = (option) => {
-    setCountry(option?.value as string);
-    setYear(null);
+  const handleChange = (option: SelectType | null, type: string) => {
+    if (type === "year") {
+      setYear(option?.value as string);
+      setCountry(null);
+    } else if (type === "country") {
+      setCountry(option?.value as string);
+      setYear(null);
+    }
   };
 
   return (
     <div className="statistics">
-      <Grid container m={4}>
+      <Grid container justifyContent="center" mt={3}>
         <Grid item>
-          <Paper className="bar" ref={ref}>
-            <Typography variant="h4" className="chart-title" p={4}>
+          <Paper className="bar" ref={ref} id="tooltip">
+            <Typography
+              variant="h5"
+              textAlign="center"
+              className="chart-title"
+              p={4}
+            >
               {country && `Results for ${country}`}
               {year && `Results for ${year}`}
             </Typography>
           </Paper>
         </Grid>
-        <Grid item m={6}>
-          <Grid m={4}>
-            <label>
-              <Typography variant="h6" pb={1}>
-                Points by year:
-              </Typography>
-              <Select
-                className="select year"
-                onChange={(option) => handleYear(option)}
-                options={years}
-                value={years.filter((option) => option.value === year)}
-              />
-            </label>
+      </Grid>
+      <Grid container justifyContent="center">
+        {!hoverData && (
+          <Grid item m={2}>
+            <Grid m={4}>
+              <label>
+                <Typography variant="h6" pb={1}>
+                  Points by year:
+                </Typography>
+                <Select
+                  className="select year"
+                  onChange={(option) => handleChange(option, "year")}
+                  options={years}
+                  value={years.filter((option) => option.value === year)}
+                />
+              </label>
+            </Grid>
+            <Grid m={4}>
+              <label>
+                <Typography variant="h6" pb={1}>
+                  Points by country:
+                </Typography>
+                <Select
+                  className="select country"
+                  onChange={(option) => handleChange(option, "country")}
+                  options={countries}
+                  value={countries.filter((option) => option.value === country)}
+                />
+              </label>
+            </Grid>
           </Grid>
-          <Grid m={4}>
-            <label>
-              <Typography variant="h6" pb={1}>
-                Points by country:
-              </Typography>
-              <Select
-                className="select country"
-                onChange={(option) => handleCountry(option)}
-                options={countries}
-                value={countries.filter((option) => option.value === country)}
-              />
-            </label>
+        )}
+        {hoverData && (
+          <Grid m={6}>
+            <Typography variant="h6">{hoverData[0]}</Typography>
+            <Typography variant="body2">
+              Performer: {`${hoverData[5]}`}
+            </Typography>
+            <Typography variant="body2">Song: {`${hoverData[6]}`}</Typography>
+            <Typography variant="body2">
+              Final Position: {`${hoverData[4]}`}
+            </Typography>
+            <Typography variant="body2">
+              Total points: {hoverData[1]}
+            </Typography>
+            <Typography variant="body2">Jury: {hoverData[2]}</Typography>
+            <Typography variant="body2">
+              Audience: {`${hoverData[3]}`}
+            </Typography>
           </Grid>
-        </Grid>
+        )}
       </Grid>
     </div>
   );
 };
 
 export default Statistics;
-
-// TODO:
-
-/*
-- modify to show the data from all of the years when country is selected, not just one
-- change the naming under the chart to 'year' instead of 'country name'.
-- create tooltips to show additional information
-*/
