@@ -115,7 +115,6 @@ const Statistics: React.FC = () => {
   // show data by country or year
   useEffect(() => {
     if (!allData) return;
-
     let filtered: Data[] = [];
 
     if (country) {
@@ -183,6 +182,7 @@ const Statistics: React.FC = () => {
     xAxisGroup.call(xAxis);
   }, [chartData]);
 
+  // handle the change of the <Select> options
   const handleChange = (option: SelectType | null, type: string) => {
     if (type === "year") {
       setYear(option?.value as string);
@@ -212,10 +212,10 @@ const Statistics: React.FC = () => {
       </Grid>
       <Grid container justifyContent="center">
         {!hoverData && (
-          <Grid item m={2}>
-            <Grid m={4}>
+          <>
+            <Grid m={2}>
               <label>
-                <Typography variant="h6" pb={1}>
+                <Typography variant="body1" pb={1}>
                   Points by year:
                 </Typography>
                 <Select
@@ -226,9 +226,9 @@ const Statistics: React.FC = () => {
                 />
               </label>
             </Grid>
-            <Grid m={4}>
+            <Grid m={2}>
               <label>
-                <Typography variant="h6" pb={1}>
+                <Typography variant="body1" pb={1}>
                   Points by country:
                 </Typography>
                 <Select
@@ -239,7 +239,7 @@ const Statistics: React.FC = () => {
                 />
               </label>
             </Grid>
-          </Grid>
+          </>
         )}
         {hoverData && (
           <Grid m={6}>
