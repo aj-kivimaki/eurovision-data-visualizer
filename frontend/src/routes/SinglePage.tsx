@@ -1,15 +1,12 @@
-import {
-  Box,
-  Typography,
-  CardMedia,
-} from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import data from "../../data/testData.json";
+import YouTube from "react-youtube";
 
 const SinglePage: React.FC = () => {
   const artistData = data.testData[0];
   const youtubeUrl = artistData.youtube_url;
   const videoId = youtubeUrl?.split("v=")[1];
-  const thumbnailAddress = `https://img.youtube.com/vi/${videoId}/0.jpg`;
   const composers: string[] = artistData.composers?.split(";") ?? [];
   const flagUrl: string = `https://flagsapi.com/${artistData.to_country_id?.toUpperCase()}/flat/32.png`; //Docs: https://flagsapi.com/#body
 
@@ -17,9 +14,9 @@ const SinglePage: React.FC = () => {
     let output = "";
 
     if (composers.length === 1) {
-      return composers[0]
+      return composers[0];
     }
-    
+
     for (let i = 0; i < composers.length; i++) {
       if (i === composers.length - 1) {
         output += " & ";
@@ -30,11 +27,28 @@ const SinglePage: React.FC = () => {
     }
     return output;
   };
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const options = {
+    height: isSmallScreen ? "200" : "390",
+    width: isSmallScreen ? "320" : "640",
+    playerVars: {
+      autoplay: 0,
+      controls: 1,
+    },
+  };
 
   return (
     <Box sx={{ padding: "2rem", backgroundColor: "#D2D2D2" }}>
-      <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-evenly",
+          flexDirection: { xs: "column", sm: "column", md: "row" },
+          gap: "1rem"
+        }}
+      >
         <Box>
           <Typography variant="h3">{artistData.performer}</Typography>
           <Typography variant="h4">{artistData.song}</Typography>
@@ -55,10 +69,7 @@ const SinglePage: React.FC = () => {
           </Typography>
           <Typography>Final place: {artistData.place_final}</Typography>
         </Box>
-        <CardMedia
-          sx={{ height: "500px", width: "500px" }}
-          image={thumbnailAddress}
-        ></CardMedia>
+          <YouTube videoId={videoId} opts={options} />
       </Box>
     </Box>
   );
