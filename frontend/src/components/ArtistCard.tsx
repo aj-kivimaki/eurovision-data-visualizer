@@ -7,6 +7,7 @@ const ArtistCard = () => {
   const videoId = youtubeUrl?.split("v=")[1];
   const thumbnailAddress = `https://img.youtube.com/vi/${videoId}/0.jpg`;
   const composers: string[] = artistData.composers?.split(";") ?? [];
+  const flagUrl: string = `https://flagsapi.com/${artistData.to_country_id?.toUpperCase()}/flat/32.png`; //Docs: https://flagsapi.com/#body
 
   const formatComposers = (composers: string[]): string => {
     let output = "";
@@ -22,14 +23,17 @@ const ArtistCard = () => {
   };
 
   const card = (
-    <CardContent sx={{ width: "300px", border:"1px solid", borderRadius: "4px" }}>
+    <CardContent>
       <CardMedia
         sx={{
           height: "200px",
         }}
         image={thumbnailAddress}
       ></CardMedia>
-      <Typography variant="h4">{artistData.performer}</Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <Typography variant="h4">{artistData.performer} </Typography>
+        <img src={flagUrl} alt={artistData.to_country} />
+      </Box>
       <Typography>{artistData.song}</Typography>
       <Typography sx={{ fontStyle: "italic" }}>
         ({formatComposers(composers)})
@@ -38,9 +42,16 @@ const ArtistCard = () => {
   );
 
   return (
-    <Box>
-      <Card>{card}</Card>
-    </Box>
+    <Card
+      sx={{
+        width: "300px",
+        border: "1px solid",
+        borderRadius: "4px",
+        backgroundColor: "#D2D2D2",
+      }}
+    >
+      {card}
+    </Card>
   );
 };
 
