@@ -34,12 +34,13 @@ const graphHeight = height - margin.top - margin.bottom;
 
 const Statistics: React.FC = () => {
   const [years, setYears] = useState<SelectType[]>([]);
-  const [year, setYear] = useState<string | null>(null);
+  const [year, setYear] = useState<string | null>("2023");
   const [countries, setCountries] = useState<SelectType[]>([]);
   const [country, setCountry] = useState<string | null>(null);
   const [allData, setAllData] = useState<Data[] | null>(null);
   const [chartData, setChartData] = useState<Data[] | null>(null);
   const [hoverData, setHoverData] = useState<Data | null>(null);
+  const [query, setQuery] = useState<string>("2023");
   const ref = useRef(null);
 
   // format the data for the <Select> options
@@ -103,18 +104,32 @@ const Statistics: React.FC = () => {
   );
 
   // fetch the data
-  useEffect(() => {
+  /*   useEffect(() => {
     fetch("http://localhost:8000/testData")
       .then((response) => response.json())
       .then((json) => {
         setOptions(json as Json);
         setFetchedData(json as Json);
       });
-  }, [setOptions, setFetchedData]);
+  }, [setOptions, setFetchedData]); */
+
+  // fetch the data w/ dynamic path
+  useEffect(() => {
+    if (!query) return;
+    console.log(`http://localhost:8080/eurovision?q=${query}`);
+
+    fetch(`http://localhost:8080/eurovision?q=${query}`)
+      .then((response) => response.json())
+      .then((json) => {
+        setOptions(json as Json);
+        setFetchedData(json as Json);
+      });
+  }, [setOptions, setFetchedData, query]);
 
   // show data by country or year
   useEffect(() => {
     if (!allData) return;
+
     let filtered: Data[] = [];
 
     if (country) {
@@ -184,6 +199,9 @@ const Statistics: React.FC = () => {
 
   // handle the change of the <Select> options
   const handleChange = (option: SelectType | null, type: string) => {
+    if (option) {
+      setQuery(String(option.value).toLowerCase());
+    }
     if (type === "year") {
       setYear(option?.value as string);
       setCountry(null);
