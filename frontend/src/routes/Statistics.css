@@ -4,7 +4,7 @@
 
 .statistics .bar:hover {
   cursor: pointer;
-  fill: lime;
+  fill: #ff43ec;
   scale: (1.1);
 }
 

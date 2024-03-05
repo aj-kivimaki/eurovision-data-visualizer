@@ -26,8 +26,8 @@ type SelectType = {
 };
 
 // constants for the bar chart
-const width = 800;
-const height = 400;
+const width = 600;
+const height = 250;
 const margin = { top: 20, right: 20, bottom: 100, left: 100 };
 const graphWidth = width - margin.left - margin.right;
 const graphHeight = height - margin.top - margin.bottom;
@@ -39,6 +39,7 @@ const Statistics: React.FC = () => {
   const [country, setCountry] = useState<string | null>(null);
   const [allData, setAllData] = useState<Data[] | null>(null);
   const [chartData, setChartData] = useState<Data[] | null>(null);
+  const [hoverData, setHoverData] = useState<Data | null>(null);
   const ref = useRef(null);
 
   // format the data for the <Select> options
@@ -51,31 +52,55 @@ const Statistics: React.FC = () => {
   // set the <Select> options
   const setOptions = useCallback(
     (json: Json) => {
-      setCountries(formatData(json.map((c) => c.to_country)));
+      setCountries(formatData(new Set(json.map((c) => c.to_country))));
       setYears(formatData(new Set(json.map((y) => y.year))));
     },
     [formatData]
   );
 
+  // format data based on option
+  const formatChartData = useCallback(
+    (data: Data[]) => {
+      const formattedData: Data[] = [];
+
+      if (year !== null) {
+        data.map((c) =>
+          formattedData.push([c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7]])
+        );
+      }
+
+      if (country !== null) {
+        data.map((c) =>
+          formattedData.push([c[7], c[1], c[2], c[3], c[4], c[5], c[6], c[0]])
+        );
+      }
+      setChartData(formattedData);
+    },
+    [country, year]
+  );
+
   // filter fetched data
-  const setFetchedData = useCallback((json: Json) => {
-    const fetchedData = (json as Json)
-      .map((d) => {
-        return [
-          d.to_country,
-          d.points_final,
-          d.points_tele_final,
-          d.points_jury_final,
-          d.place_contest,
-          d.performer,
-          d.song,
-          d.year.toString(),
-        ];
-      })
-      .sort((a, b) => (a[1] as number) - (b[1] as number)); // sort, ascending order
-    setAllData(fetchedData as Data[]);
-    setChartData(fetchedData as Data[]);
-  }, []);
+  const setFetchedData = useCallback(
+    (json: Json) => {
+      const fetchedData = (json as Json)
+        .map((d) => {
+          return [
+            d.to_country,
+            d.points_final,
+            d.points_tele_final,
+            d.points_jury_final,
+            d.place_contest,
+            d.performer,
+            d.song,
+            d.year.toString(),
+          ];
+        })
+        .sort((a, b) => (a[1] as number) - (b[1] as number)); // sort, ascending order
+      setAllData(fetchedData as Data[]);
+      formatChartData(fetchedData as Data[]);
+    },
+    [formatChartData]
+  );
 
   // fetch the data
   useEffect(() => {
@@ -90,7 +115,6 @@ const Statistics: React.FC = () => {
   // show data by country or year
   useEffect(() => {
     if (!allData) return;
-
     let filtered: Data[] = [];
 
     if (country) {
@@ -99,8 +123,8 @@ const Statistics: React.FC = () => {
       filtered = allData.filter((d) => d[7] === year?.toString());
     }
 
-    setChartData(filtered);
-  }, [allData, country, year]);
+    formatChartData(filtered);
+  }, [allData, country, year, formatChartData]);
 
   // create the bar chart
   useEffect(() => {
@@ -110,8 +134,8 @@ const Statistics: React.FC = () => {
     const svg = d3
       .select(ref.current)
       .append("svg")
-      .attr("width", 1000)
-      .attr("height", 500);
+      .attr("width", 800)
+      .attr("height", 200);
 
     const graph = svg
       .append("g")
@@ -142,52 +166,100 @@ const Statistics: React.FC = () => {
       .join("rect")
       .attr("width", x.bandwidth)
       .attr("height", (d) => graphHeight - y(d[1]))
-      .attr("fill", "#FF43EC")
+      .attr("fill", "#00ff00")
       .attr("x", (d) => x(d[0]) as number)
       .attr("y", (d) => y(d[1]))
       .attr("class", "bar")
-      .attr("data-gdp", (d) => d[1])
-      .attr("data-date", (d) => d[0]);
+      .on("mouseover", (_, i) => {
+        setHoverData(i);
+      })
+      .on("mouseout", () => setHoverData(null));
 
     const xAxis = d3.axisBottom(x);
-    const yAxis = d3.axisLeft(y).ticks(10);
+    const yAxis = d3.axisLeft(y).ticks(6);
 
     yAxisGroup.call(yAxis);
     xAxisGroup.call(xAxis);
   }, [chartData]);
 
+  // handle the change of the <Select> options
+  const handleChange = (option: SelectType | null, type: string) => {
+    if (type === "year") {
+      setYear(option?.value as string);
+      setCountry(null);
+    } else if (type === "country") {
+      setCountry(option?.value as string);
+      setYear(null);
+    }
+  };
+
   return (
     <div className="statistics">
-      <Grid container alignItems="center" justifyContent="center">
-        <Grid item m={6}>
-          <Grid container justifyContent="center">
-            <Grid item m={4}>
-              <Typography variant="h6">Show results by year</Typography>
-              <Select
-                className="select year"
-                onChange={(option) => {
-                  setYear(option?.value as string);
-                  setCountry(null);
-                }}
-                options={years}
-                value={years.filter((option) => option.value === year)}
-              />
-            </Grid>
-            <Grid item m={4}>
-              <Typography variant="h6">Show results by country</Typography>
-              <Select
-                className="select country"
-                onChange={(option) => {
-                  setCountry(option?.value as string);
-                  setYear(null);
-                }}
-                options={countries}
-                value={countries.filter((option) => option.value === country)}
-              />
-            </Grid>
-          </Grid>
-          <Paper className="bar" ref={ref}></Paper>
+      <Grid container justifyContent="center" mt={3}>
+        <Grid item>
+          <Paper className="bar" ref={ref} id="tooltip">
+            <Typography
+              variant="h5"
+              textAlign="center"
+              className="chart-title"
+              p={4}
+            >
+              {country && `Results for ${country}`}
+              {year && `Results for ${year}`}
+            </Typography>
+          </Paper>
         </Grid>
+      </Grid>
+      <Grid container justifyContent="center">
+        {!hoverData && (
+          <>
+            <Grid m={2}>
+              <label>
+                <Typography variant="body1" pb={1}>
+                  Points by year:
+                </Typography>
+                <Select
+                  className="select year"
+                  onChange={(option) => handleChange(option, "year")}
+                  options={years}
+                  value={years.filter((option) => option.value === year)}
+                />
+              </label>
+            </Grid>
+            <Grid m={2}>
+              <label>
+                <Typography variant="body1" pb={1}>
+                  Points by country:
+                </Typography>
+                <Select
+                  className="select country"
+                  onChange={(option) => handleChange(option, "country")}
+                  options={countries}
+                  value={countries.filter((option) => option.value === country)}
+                />
+              </label>
+            </Grid>
+          </>
+        )}
+        {hoverData && (
+          <Grid m={6}>
+            <Typography variant="h6">{hoverData[0]}</Typography>
+            <Typography variant="body2">
+              Performer: {`${hoverData[5]}`}
+            </Typography>
+            <Typography variant="body2">Song: {`${hoverData[6]}`}</Typography>
+            <Typography variant="body2">
+              Final Position: {`${hoverData[4]}`}
+            </Typography>
+            <Typography variant="body2">
+              Total points: {hoverData[1]}
+            </Typography>
+            <Typography variant="body2">Jury: {hoverData[2]}</Typography>
+            <Typography variant="body2">
+              Audience: {`${hoverData[3]}`}
+            </Typography>
+          </Grid>
+        )}
       </Grid>
     </div>
   );

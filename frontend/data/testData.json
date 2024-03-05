@@ -82,6 +82,21 @@
       "points_sf": null,
       "points_tele_final": 176,
       "points_jury_final": 150
+    },
+    {
+      "year": 2021,
+      "to_country": "Norway",
+      "performer": "Loreen",
+      "place_contest": 2,
+      "sf_num": null,
+      "running_final": 13,
+      "running_sf": null,
+      "place_final": 2,
+      "points_final": 208,
+      "place_sf": null,
+      "points_sf": null,
+      "points_tele_final": 176,
+      "points_jury_final": 150
     }
   ]
 }
