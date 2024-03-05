@@ -1,4 +1,5 @@
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box, Typography, Button, useMediaQuery } from "@mui/material";
+import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import data from "../../data/testData.json";
 import YouTube from "react-youtube";
@@ -46,7 +47,7 @@ const SinglePage: React.FC = () => {
           display: "flex",
           justifyContent: "space-evenly",
           flexDirection: { xs: "column", sm: "column", md: "row" },
-          gap: "1rem"
+          gap: "1rem",
         }}
       >
         <Box>
@@ -68,8 +69,11 @@ const SinglePage: React.FC = () => {
             {artistData.points_jury_final + artistData.points_tele_final}
           </Typography>
           <Typography>Final place: {artistData.place_final}</Typography>
+          <Link to={"/"}>
+            <Button variant="contained">Go back</Button>
+          </Link>
         </Box>
-          <YouTube videoId={videoId} opts={options} />
+        <YouTube videoId={videoId} opts={options} />
       </Box>
     </Box>
   );
