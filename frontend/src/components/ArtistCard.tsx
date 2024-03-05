@@ -11,6 +11,11 @@ const ArtistCard = () => {
 
   const formatComposers = (composers: string[]): string => {
     let output = "";
+
+    if (composers.length === 1) {
+      return composers[0]
+    }
+    
     for (let i = 0; i < composers.length; i++) {
       if (i === composers.length - 1) {
         output += " & ";
