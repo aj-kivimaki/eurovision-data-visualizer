@@ -27,9 +27,10 @@ const ArtistCard = () => {
       <CardMedia
         sx={{
           height: "200px",
+          cursor: "pointer",
         }}
         image={thumbnailAddress}
-      ></CardMedia>
+      />
       <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <Typography variant="h4">{artistData.performer} </Typography>
         <img src={flagUrl} alt={artistData.to_country} />
