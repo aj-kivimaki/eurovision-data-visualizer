@@ -4,46 +4,32 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
-import mongoose from "mongoose";
-import EurovisionModel from "./db/eurodata";
+import { connectToDatabase } from "./config/database";
+import { eurovisionRouter } from "./routes/eurovision";
+import morgan from "morgan";
 
-require("dotenv").config(); // Load environment variables from .env file
+require("dotenv").config();
 
 const MONGO_URL = process.env.MONGO_URL;
 
 const app = express();
 
-app.use(cors());
-app.use(compression());
-app.use(cookieParser());
-app.use(bodyParser.json());
+app.use(cors()); // Enable All CORS Requests
+app.use(compression()); // Compress all routes and responses
+app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
+app.use(bodyParser.json()); // Parse incoming request bodies in a middleware before your handlers, available under the req.body property
+app.use(morgan(":method :url :status :response-time ms")); // Logging HTTP requests to the console
+
+app.use("/eurovision", eurovisionRouter);
+
+app.get("/", (req, res) => {
+  res.send("Welcome to Eurovision API 🎤 A typescript project for React23s");
+});
 
 const server = http.createServer(app);
-
-const router = express.Router();
 
 server.listen(8080, () => {
   console.log("Server is running on port http://localhost:8080/");
 });
 
-mongoose.Promise = global.Promise; // Use Node.js global Promise library
-
-mongoose.connect(MONGO_URL);
-
-mongoose.connection.on("error", (error) => {
-  console.error("MongoDB connection error:", error);
-});
-
-mongoose.connection.once("open", () => {
-  console.log("Connected to MongoDB successfully!");
-});
-
-app.get("/eurovision", async (req, res) => {
-  try {
-    const data = await EurovisionModel.find();
-    res.json(data);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+connectToDatabase(MONGO_URL);

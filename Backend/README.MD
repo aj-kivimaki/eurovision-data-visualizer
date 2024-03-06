@@ -1,0 +1,12 @@
+- src
+  - config
+    - database.ts
+  - middlewares
+    - logging.ts
+  - models
+    - EurovisionModel.ts
+  - routes
+    - eurovision.ts
+  - utils
+    - errorHandling.ts
+  - index.ts
