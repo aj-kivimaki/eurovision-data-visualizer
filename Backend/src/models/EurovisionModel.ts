@@ -1,8 +1,7 @@
-import mongoose from "mongoose";
-
-import { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 interface EurovisionData extends Document {
+  // Define an interface for the Eurovision data
   year: number;
   to_country_id: string;
   to_country: string;
@@ -27,6 +26,7 @@ interface EurovisionData extends Document {
 }
 
 const eurodataSchema: Schema<EurovisionData> = new Schema({
+  // Define a schema for the Eurovision data
   year: { type: Number, required: true },
   to_country_id: { type: String, required: true },
   to_country: { type: String, required: true },
@@ -56,7 +56,4 @@ const EurovisionModel = mongoose.model<EurovisionData>(
 );
 
 export default EurovisionModel;
-
-export const getEurovisionData = () => {
-  return EurovisionModel.find();
-};
+export { EurovisionData };
