@@ -79,16 +79,35 @@ const Home: React.FC = () => {
             </Select>
           </FormControl>
         </Box>
-        {artists.map((artist) => (
-          <ArtistCard
-            artistName={artist.performer}
-            artistCountry={artist.to_country}
-            songName={artist.song}
-            youtubeURL={artist.youtube_url}
-            composers={artist.composers}
-            countryId={artist.to_country_id}
-          />
-        ))}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexFlow: "wrap",
+              mx: "2rem",
+              gap: "2rem",
+              mb: "2rem",
+              width: "90%",
+            }}
+          >
+            {artists.map((artist, index) => (
+              <ArtistCard
+                key={`${artist.performer}_${index}`}
+                artistName={artist.performer}
+                artistCountry={artist.to_country}
+                songName={artist.song}
+                youtubeURL={artist.youtube_url}
+                composers={artist.composers}
+                countryId={artist.to_country_id}
+              />
+            ))}
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
