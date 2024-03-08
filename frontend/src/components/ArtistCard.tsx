@@ -1,21 +1,34 @@
 import { Box, Typography, Card, CardMedia, CardContent } from "@mui/material";
-import data from "../../data/testData.json";
 
-const ArtistCard = () => {
-  const artistData = data.testData[0];
-  const youtubeUrl = artistData.youtube_url;
-  const videoId = youtubeUrl?.split("v=")[1];
+interface ArtistProps {
+  artistName: string;
+  artistCountry: string;
+  songName: string;
+  youtubeURL: string;
+  composers: string;
+  countryId: string;
+}
+
+const ArtistCard = ({
+  artistName,
+  artistCountry,
+  songName,
+  youtubeURL,
+  composers,
+  countryId,
+}: ArtistProps) => {
+  const videoId = youtubeURL?.split("v=")[1];
   const thumbnailAddress = `https://img.youtube.com/vi/${videoId}/0.jpg`;
-  const composers: string[] = artistData.composers?.split(";") ?? [];
-  const flagUrl: string = `https://flagsapi.com/${artistData.to_country_id?.toUpperCase()}/flat/32.png`; //Docs: https://flagsapi.com/#body
+  const composersProcess: string[] = composers?.split(";") ?? [];
+  const flagUrl: string = `https://flagsapi.com/${countryId?.toUpperCase()}/flat/32.png`; //Docs: https://flagsapi.com/#body
 
   const formatComposers = (composers: string[]): string => {
     let output = "";
 
     if (composers.length === 1) {
-      return composers[0]
+      return composers[0];
     }
-    
+
     for (let i = 0; i < composers.length; i++) {
       if (i === composers.length - 1) {
         output += " & ";
@@ -37,12 +50,12 @@ const ArtistCard = () => {
         image={thumbnailAddress}
       />
       <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-        <Typography variant="h4">{artistData.performer} </Typography>
-        <img src={flagUrl} alt={artistData.to_country} />
+        <Typography variant="h4">{artistName} </Typography>
+        <img src={flagUrl} alt={artistCountry} />
       </Box>
-      <Typography>{artistData.song}</Typography>
+      <Typography>{songName}</Typography>
       <Typography sx={{ fontStyle: "italic" }}>
-        ({formatComposers(composers)})
+        ({formatComposers(composersProcess)})
       </Typography>
     </CardContent>
   );
