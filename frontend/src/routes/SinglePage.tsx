@@ -41,7 +41,7 @@ const SinglePage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: "2rem", backgroundColor: "#D2D2D2" }}>
+    <Box sx={{ padding: "2rem" }}>
       <Box
         sx={{
           display: "flex",
