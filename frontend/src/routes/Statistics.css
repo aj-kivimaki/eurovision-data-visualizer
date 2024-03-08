@@ -1,3 +1,10 @@
+.statistics {
+  min-height: 100vh;
+}
+.statistics .scroll {
+  overflow-x: scroll;
+}
+
 .statistics .bar {
   transition: all 0.15s ease;
 }
@@ -5,7 +12,6 @@
 .statistics .bar:hover {
   cursor: pointer;
   fill: #ff43ec;
-  scale: (1.1);
 }
 
 .statistics .select {
