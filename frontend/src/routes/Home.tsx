@@ -9,17 +9,19 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
+import ArtistCard from "../components/ArtistCard";
 useState;
+import { EurovisionData } from "../types/EurovisionModel";
 
 const Home: React.FC = () => {
-  const [artists, setArtists] = useState([]);
+  const [artists, setArtists] = useState<EurovisionData[]>([]);
   const [year, setYear] = useState<number>(2023);
 
   useEffect(() => {
     const baseUrl = "http://localhost:8080/eurovision";
     const getArtists = async () => {
       try {
-        const response = await fetch(baseUrl);
+        const response = await fetch(`${baseUrl}?year=${year}`);
         const data = await response.json();
         setArtists(data);
       } catch (error) {
@@ -77,6 +79,16 @@ const Home: React.FC = () => {
             </Select>
           </FormControl>
         </Box>
+        {artists.map((artist) => (
+          <ArtistCard
+            artistName={artist.performer}
+            artistCountry={artist.to_country}
+            songName={artist.song}
+            youtubeURL={artist.youtube_url}
+            composers={artist.composers}
+            countryId={artist.to_country_id}
+          />
+        ))}
       </Box>
     </Box>
   );
