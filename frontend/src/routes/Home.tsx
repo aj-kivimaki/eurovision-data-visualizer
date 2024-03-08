@@ -79,20 +79,14 @@ const Home: React.FC = () => {
             </Select>
           </FormControl>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
           <Box
             sx={{
               display: "flex",
               flexFlow: "wrap",
+              justifyContent:"center",
               mx: "2rem",
               gap: "2rem",
               mb: "2rem",
-              width: "90%",
             }}
           >
             {artists.map((artist, index) => (
@@ -107,7 +101,6 @@ const Home: React.FC = () => {
               />
             ))}
           </Box>
-        </Box>
       </Box>
     </Box>
   );
