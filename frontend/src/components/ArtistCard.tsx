@@ -1,4 +1,5 @@
 import { Box, Typography, Card, CardMedia, CardContent } from "@mui/material";
+import { Link } from "react-router-dom";
 
 interface ArtistProps {
   artistName: string;
@@ -42,13 +43,15 @@ const ArtistCard = ({
 
   const card = (
     <CardContent>
-      <CardMedia
-        sx={{
-          height: "200px",
-          cursor: "pointer",
-        }}
-        image={thumbnailAddress}
-      />
+      <Link to={artistName.toLowerCase()}>
+        <CardMedia
+          sx={{
+            height: "200px",
+            cursor: "pointer",
+          }}
+          image={thumbnailAddress}
+        />
+      </Link>
       <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <Typography variant="h4">{artistName} </Typography>
         <img src={flagUrl} alt={artistCountry} />
