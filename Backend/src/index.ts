@@ -7,6 +7,7 @@ import cors from "cors";
 import { connectToDatabase } from "./config/database";
 import { eurovisionRouter } from "./routes/eurovision";
 import morgan from "morgan";
+import logger from "../src/utils/logger";
 
 require("dotenv").config();
 
@@ -30,6 +31,7 @@ const server = http.createServer(app);
 
 server.listen(8080, () => {
   console.log("Server is running on port http://localhost:8080/");
+  logger.info(`Server listening on port 8080 🚀`);
 });
 
 connectToDatabase(MONGO_URL);
