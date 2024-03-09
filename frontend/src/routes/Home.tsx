@@ -91,6 +91,7 @@ const Home: React.FC = () => {
           >
             {artists.map((artist, index) => (
               <ArtistCard
+                {...artist}
                 key={`${artist.performer}_${index}`}
                 artistName={artist.performer}
                 artistCountry={artist.to_country}

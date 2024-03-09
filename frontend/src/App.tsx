@@ -15,7 +15,7 @@ const App: React.FC = () => {
           element: <Home />,
         },
         {
-          path: "/:artistName",
+          path: "/artist/:artistName",
           element: <SinglePage />,
         },
         {

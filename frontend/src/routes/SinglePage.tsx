@@ -1,11 +1,12 @@
 import { Box, Typography, Button, useMediaQuery } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
-import data from "../../data/testData.json";
 import YouTube from "react-youtube";
 
 const SinglePage: React.FC = () => {
-  const artistData = data.testData[0];
+  const location = useLocation().state; //Import EurovisionData from Link element in ArtistCard
+  const artistData = location.props;
+
   const youtubeUrl = artistData.youtube_url;
   const videoId = youtubeUrl?.split("v=")[1];
   const composers: string[] = artistData.composers?.split(";") ?? [];

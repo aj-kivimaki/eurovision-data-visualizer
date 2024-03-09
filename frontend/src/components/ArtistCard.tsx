@@ -10,14 +10,16 @@ interface ArtistProps {
   countryId: string;
 }
 
-const ArtistCard = ({
-  artistName,
-  artistCountry,
-  songName,
-  youtubeURL,
-  composers,
-  countryId,
-}: ArtistProps) => {
+const ArtistCard = (props: ArtistProps) => {
+  const {
+    artistName,
+    artistCountry,
+    songName,
+    youtubeURL,
+    composers,
+    countryId,
+  } = props;
+
   const videoId = youtubeURL?.split("v=")[1];
   const thumbnailAddress = `https://img.youtube.com/vi/${videoId}/0.jpg`;
   const composersProcess: string[] = composers?.split(";") ?? [];
@@ -43,7 +45,12 @@ const ArtistCard = ({
 
   const card = (
     <CardContent>
-      <Link to={artistName.toLowerCase()}>
+      <Link
+        to={{
+          pathname: `/artist/${artistName.toLowerCase()}`,
+        }}
+        state={{ props: props }}
+      >
         <CardMedia
           sx={{
             height: "200px",
