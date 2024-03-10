@@ -63,19 +63,22 @@ const Statistics: React.FC = () => {
   const formatChartData = useCallback(
     (data: Data[]) => {
       const formattedData: Data[] = [];
+      let sortedData: Data[] = [];
 
       if (year !== null) {
         data.map((c) =>
           formattedData.push([c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7]])
         );
+        sortedData = formattedData.sort((a, b) => a[1] - b[1]);
       }
 
       if (country !== null) {
         data.map((c) =>
           formattedData.push([c[7], c[1], c[2], c[3], c[4], c[5], c[6], c[0]])
         );
+        console.log(formattedData);
+        sortedData = formattedData.sort((a, b) => Number(a[0]) - Number(b[0]));
       }
-      const sortedData = formattedData.sort((a, b) => a[1] - b[1]);
       setChartData(sortedData);
     },
     [country, year]
@@ -93,7 +96,7 @@ const Statistics: React.FC = () => {
           +d.place_contest,
           d.performer,
           d.song,
-          d.year,
+          d.year.toString(),
         ];
       });
       setAllData(fetchedData as Data[]);
@@ -175,6 +178,7 @@ const Statistics: React.FC = () => {
       .attr("class", "bar")
       .on("mouseover", (_, i) => {
         setHoverData(i);
+        console.log(i);
       })
       .on("mouseout", () => setHoverData(null));
 
@@ -273,13 +277,15 @@ const Statistics: React.FC = () => {
               Total points: {hoverData[1]}
             </Typography>
           )}
-          {hoverData[2] && (
+          {hoverData[2] || hoverData[2] !== 0 ? (
             <Typography variant="body2">Jury: {hoverData[2]}</Typography>
+          ) : (
+            ""
           )}
-          {hoverData[3] && (
-            <Typography variant="body2">
-              Audience: {`${hoverData[3]}`}
-            </Typography>
+          {hoverData[3] || hoverData[2] !== 0 ? (
+            <Typography variant="body2">Audience: {hoverData[3]}</Typography>
+          ) : (
+            ""
           )}
         </Grid>
       )}
