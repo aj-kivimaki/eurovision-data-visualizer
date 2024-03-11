@@ -44,7 +44,7 @@ const ArtistCard = (props: ArtistProps) => {
   };
 
   const card = (
-    <CardContent>
+    <CardContent sx={{p:0}}>
       <Link
         to={{
           pathname: `/artist/${artistName.toLowerCase()}`,
@@ -65,6 +65,7 @@ const ArtistCard = (props: ArtistProps) => {
           flexDirection: "column",
           gap: "0.25rem",
           mt: "1rem",
+          px:"1rem"
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: "bold" }}>
