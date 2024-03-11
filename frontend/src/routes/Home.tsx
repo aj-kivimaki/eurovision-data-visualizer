@@ -63,6 +63,8 @@ const Home: React.FC = () => {
     return filteredArtists;
   };
 
+  const filteredArtists = filterArtistCards(artists, search);
+
   return (
     <Box>
       <Banner />
@@ -90,7 +92,7 @@ const Home: React.FC = () => {
           }}
         >
           <SearchInput handleSearch={handleSearch} />
-          <FormControl sx={{}}>
+          <FormControl>
             <InputLabel>Year</InputLabel>
             <Select
               label="Year"
@@ -112,19 +114,25 @@ const Home: React.FC = () => {
             mb: "2rem",
           }}
         >
-          {/* Filter artists before mapping them */}
-          {filterArtistCards(artists, search).map((artist, index) => (
-            <ArtistCard
-              {...artist}
-              key={`${artist.performer}_${index}`}
-              artistName={artist.performer}
-              artistCountry={artist.to_country}
-              songName={artist.song}
-              youtubeURL={artist.youtube_url}
-              composers={artist.composers}
-              countryId={artist.to_country_id}
-            />
-          ))}
+          {/* Filter artists before mapping them and display a message if no matches are found */}
+          {filteredArtists.length === 0 ? (
+            <>
+              <Typography sx={{height:"350px", color:"#000", pt:"1rem"}}>No matches found with "{search}"</Typography>
+            </>
+          ) : (
+            filteredArtists.map((artist, index) => (
+              <ArtistCard
+                {...artist}
+                key={`${artist.performer}_${index}`}
+                artistName={artist.performer}
+                artistCountry={artist.to_country}
+                songName={artist.song}
+                youtubeURL={artist.youtube_url}
+                composers={artist.composers}
+                countryId={artist.to_country_id}
+              />
+            ))
+          )}
         </Box>
       </Box>
     </Box>
