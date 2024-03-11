@@ -9,6 +9,7 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import ArtistCard from "../components/ArtistCard";
 import SearchInput from "../components/SearchInput";
 import { EurovisionData } from "../types/EurovisionModel";
@@ -72,7 +73,7 @@ const Home: React.FC = () => {
   return (
     <Box>
       <Banner />
-      <Box sx={{ backgroundColor: "primary.main", height: "500px", p: 2 }}>
+      <Box sx={{ backgroundColor: "primary.main", p: "3rem" }}>
         <Typography
           variant="h1"
           sx={{
@@ -80,10 +81,24 @@ const Home: React.FC = () => {
               xs: "2rem",
               sm: "3rem",
             },
-            textAlign: "center",
           }}
         >
           Welcome to Eurovision data visualizer app!
+        </Typography>
+        <Typography sx={{ my: "1rem" }}>
+          Explore your favorite Eurovision entries from the first Eurovision
+          Song Contest to the year 2023!
+        </Typography>
+        <Typography sx={{ my: "1rem" }}>
+          Choose a year of the contest, and then search by song, artist, or
+          country name. Click the card image for more details!
+        </Typography>
+
+        <Typography sx={{ my: "1rem" }}>
+          Delve into the rich history of the Eurovision Song Contest with our
+          interactive <Link to={"/statistics"}>statistics</Link> page. Analyze voting patterns, see
+          how countries have performed over the years, and discover fascinating
+          insights about your favorite Eurovision entries.
         </Typography>
       </Box>
       <Box sx={{ color: "#FFFFFF" }}>
