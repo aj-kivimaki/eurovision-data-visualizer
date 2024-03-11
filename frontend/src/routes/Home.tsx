@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import Banner from "../components/Banner";
 import {
   Box,
@@ -10,12 +10,13 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import ArtistCard from "../components/ArtistCard";
-useState;
+import SearchInput from "../components/SearchInput";
 import { EurovisionData } from "../types/EurovisionModel";
 
 const Home: React.FC = () => {
   const [artists, setArtists] = useState<EurovisionData[]>([]);
   const [year, setYear] = useState<number>(2023);
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     const baseUrl = "http://localhost:8080/eurovision";
@@ -48,6 +49,20 @@ const Home: React.FC = () => {
     setYear(inputValue);
   };
 
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  };
+
+  const filterArtistCards = (
+    array: EurovisionData[],
+    filterValue: string
+  ): EurovisionData[] => {
+    const filteredArtists = array.filter((artist) =>
+      artist.performer.toLowerCase().startsWith(filterValue.toLowerCase())
+    );
+    return filteredArtists;
+  };
+
   return (
     <Box>
       <Banner />
@@ -66,7 +81,15 @@ const Home: React.FC = () => {
         </Typography>
       </Box>
       <Box sx={{ color: "#FFFFFF" }}>
-        <Box sx={{ p: "1rem" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "1rem",
+            p: "1rem",
+          }}
+        >
+          <SearchInput handleSearch={handleSearch} />
           <FormControl sx={{}}>
             <InputLabel>Year</InputLabel>
             <Select
@@ -79,29 +102,30 @@ const Home: React.FC = () => {
             </Select>
           </FormControl>
         </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexFlow: "wrap",
-              justifyContent:"center",
-              mx: "2rem",
-              gap: "2rem",
-              mb: "2rem",
-            }}
-          >
-            {artists.map((artist, index) => (
-              <ArtistCard
-                {...artist}
-                key={`${artist.performer}_${index}`}
-                artistName={artist.performer}
-                artistCountry={artist.to_country}
-                songName={artist.song}
-                youtubeURL={artist.youtube_url}
-                composers={artist.composers}
-                countryId={artist.to_country_id}
-              />
-            ))}
-          </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexFlow: "wrap",
+            justifyContent: "center",
+            mx: "2rem",
+            gap: "2rem",
+            mb: "2rem",
+          }}
+        >
+          {/* Filter artists before mapping them */}
+          {filterArtistCards(artists, search).map((artist, index) => (
+            <ArtistCard
+              {...artist}
+              key={`${artist.performer}_${index}`}
+              artistName={artist.performer}
+              artistCountry={artist.to_country}
+              songName={artist.song}
+              youtubeURL={artist.youtube_url}
+              composers={artist.composers}
+              countryId={artist.to_country_id}
+            />
+          ))}
+        </Box>
       </Box>
     </Box>
   );
