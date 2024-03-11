@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import Banner from "../components/Banner";
 import {
   Box,
@@ -10,12 +10,13 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import ArtistCard from "../components/ArtistCard";
-useState;
+import SearchInput from "../components/SearchInput";
 import { EurovisionData } from "../types/EurovisionModel";
 
 const Home: React.FC = () => {
   const [artists, setArtists] = useState<EurovisionData[]>([]);
   const [year, setYear] = useState<number>(2023);
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     const baseUrl = "http://localhost:8080/eurovision";
@@ -48,6 +49,26 @@ const Home: React.FC = () => {
     setYear(inputValue);
   };
 
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  };
+
+  // Filters artists with artist name, song name or country
+  const filterArtistCards = (
+    array: EurovisionData[],
+    filterValue: string
+  ): EurovisionData[] => {
+    const filteredArtists = array.filter(
+      (artist) =>
+        artist.performer.toLowerCase().startsWith(filterValue.toLowerCase()) ||
+        artist.to_country.toLowerCase().startsWith(filterValue.toLowerCase()) ||
+        artist.song.toLowerCase().startsWith(filterValue.toLowerCase())
+    );
+    return filteredArtists;
+  };
+
+  const filteredArtists = filterArtistCards(artists, search);
+
   return (
     <Box>
       <Banner />
@@ -66,8 +87,16 @@ const Home: React.FC = () => {
         </Typography>
       </Box>
       <Box sx={{ color: "#FFFFFF" }}>
-        <Box sx={{ p: "1rem" }}>
-          <FormControl sx={{}}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "1rem",
+            p: "1rem",
+          }}
+        >
+          <SearchInput handleSearch={handleSearch} />
+          <FormControl>
             <InputLabel>Year</InputLabel>
             <Select
               label="Year"
@@ -79,17 +108,25 @@ const Home: React.FC = () => {
             </Select>
           </FormControl>
         </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexFlow: "wrap",
-              justifyContent:"center",
-              mx: "2rem",
-              gap: "2rem",
-              mb: "2rem",
-            }}
-          >
-            {artists.map((artist, index) => (
+        <Box
+          sx={{
+            display: "flex",
+            flexFlow: "wrap",
+            justifyContent: "center",
+            mx: "2rem",
+            gap: "2rem",
+            mb: "2rem",
+          }}
+        >
+          {/* Filter artists before mapping them and display a message if no matches are found */}
+          {filteredArtists.length === 0 ? (
+            <>
+              <Typography sx={{ height: "350px", color: "#000", pt: "1rem" }}>
+                No matches found with "{search}" for year {year}
+              </Typography>
+            </>
+          ) : (
+            filteredArtists.map((artist, index) => (
               <ArtistCard
                 {...artist}
                 key={`${artist.performer}_${index}`}
@@ -100,8 +137,9 @@ const Home: React.FC = () => {
                 composers={artist.composers}
                 countryId={artist.to_country_id}
               />
-            ))}
-          </Box>
+            ))
+          )}
+        </Box>
       </Box>
     </Box>
   );

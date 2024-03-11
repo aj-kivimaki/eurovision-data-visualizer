@@ -17,18 +17,6 @@ const theme : Theme = createTheme({
       main: "#46BCFF",
     },
   },
-  components: {
-    MuiTextField: {
-      styleOverrides: { // https://mui.com/material-ui/customization/theme-components/#theme-style-overrides
-        root: {
-          "& input": { color: "#FFFFFF" },
-          "& .MuiOutlinedInput-notchedOutline": { // Set default border color to white
-            borderColor: "#FFFFFF",
-          }, 
-        },
-      },
-    },
-  },
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
