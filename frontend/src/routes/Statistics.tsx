@@ -34,13 +34,13 @@ const graphHeight = height - margin.top - margin.bottom;
 
 const Statistics: React.FC = () => {
   const [years, setYears] = useState<SelectType[]>([]);
-  const [year, setYear] = useState<string | null>("2023");
+  const [year, setYear] = useState<string | null>("1957");
   const [countries, setCountries] = useState<SelectType[]>([]);
   const [country, setCountry] = useState<string | null>(null);
   const [allData, setAllData] = useState<Data[] | null>(null);
   const [chartData, setChartData] = useState<Data[] | null>(null);
   const [hoverData, setHoverData] = useState<Data | null>(null);
-  const [query, setQuery] = useState<string>("2023");
+  const [query, setQuery] = useState<string>("1957");
   const ref = useRef(null);
 
   // format the data for the <Select> options
@@ -133,30 +133,38 @@ const Statistics: React.FC = () => {
 
   // create the bar chart
   useEffect(() => {
+    // remove last chart to replace with new one
     d3.select(ref.current).selectAll("svg").remove();
     if (!chartData) return;
 
+    // create the chart area
     const svg = d3
       .select(ref.current)
       .append("svg")
       .attr("width", 1400)
       .attr("height", 360);
 
+    // create the actual graph
     const graph = svg
       .append("g")
       .attr("width", graphWidth)
       .attr("height", graphHeight)
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+    // create and place the x axis at the bottom
     const xAxisGroup = graph
       .append("g")
       .attr("id", "x-axis")
       .attr("transform", `translate(0, ${graphHeight})`);
 
+    // create the y axis
     const yAxisGroup = graph.append("g").attr("id", "y-axis");
 
+    // get the max value to help with scaling
     const max = d3.max(chartData as Data[], (d) => d[1])!;
 
+    // make the graph to scale right when values change
+    // using the same area for the graph, but changing the values to fit the new data
     const y = d3.scaleLinear().domain([0, max]).range([graphHeight, 0]);
 
     const x = d3
@@ -165,6 +173,7 @@ const Statistics: React.FC = () => {
       .range([0, width])
       .paddingInner(0.1);
 
+    // create the bars and show the right data on hover
     graph
       .selectAll("rect")
       .data(chartData as Data[])
@@ -183,6 +192,7 @@ const Statistics: React.FC = () => {
     const xAxis = d3.axisBottom(x);
     const yAxis = d3.axisLeft(y).ticks(6);
 
+    // call the axes and add styling (like font size and rotation for the x axis labels)
     yAxisGroup.call(yAxis).selectAll("text").attr("font-size", "16px");
     xAxisGroup
       .call(xAxis)
