@@ -23,7 +23,7 @@ const ArtistCard = (props: ArtistProps) => {
   const videoId = youtubeURL?.split("v=")[1];
   const thumbnailAddress = `https://img.youtube.com/vi/${videoId}/0.jpg`;
   const composersProcess: string[] = composers?.split(";") ?? [];
-  const flagUrl: string = `https://flagsapi.com/${countryId?.toUpperCase()}/flat/32.png`; //Docs: https://flagsapi.com/#body
+  const flagUrl: string = `https://flagsapi.com/${countryId?.toUpperCase()}/flat/24.png`; //Docs: https://flagsapi.com/#body
 
   const formatComposers = (composers: string[]): string => {
     let output = "";
