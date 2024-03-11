@@ -53,12 +53,16 @@ const Home: React.FC = () => {
     setSearch(event.target.value);
   };
 
+  // Filters artists with artist name, song name or country
   const filterArtistCards = (
     array: EurovisionData[],
     filterValue: string
   ): EurovisionData[] => {
-    const filteredArtists = array.filter((artist) =>
-      artist.performer.toLowerCase().startsWith(filterValue.toLowerCase())
+    const filteredArtists = array.filter(
+      (artist) =>
+        artist.performer.toLowerCase().startsWith(filterValue.toLowerCase()) ||
+        artist.to_country.toLowerCase().startsWith(filterValue.toLowerCase()) ||
+        artist.song.toLowerCase().startsWith(filterValue.toLowerCase())
     );
     return filteredArtists;
   };
@@ -117,7 +121,9 @@ const Home: React.FC = () => {
           {/* Filter artists before mapping them and display a message if no matches are found */}
           {filteredArtists.length === 0 ? (
             <>
-              <Typography sx={{height:"350px", color:"#000", pt:"1rem"}}>No matches found with "{search}"</Typography>
+              <Typography sx={{ height: "350px", color: "#000", pt: "1rem" }}>
+                No matches found with "{search}" for year {year}
+              </Typography>
             </>
           ) : (
             filteredArtists.map((artist, index) => (
