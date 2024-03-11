@@ -76,7 +76,6 @@ const Statistics: React.FC = () => {
         data.map((c) =>
           formattedData.push([c[7], c[1], c[2], c[3], c[4], c[5], c[6], c[0]])
         );
-        console.log(formattedData);
         sortedData = formattedData.sort((a, b) => Number(a[0]) - Number(b[0]));
       }
       setChartData(sortedData);
@@ -178,7 +177,6 @@ const Statistics: React.FC = () => {
       .attr("class", "bar")
       .on("mouseover", (_, i) => {
         setHoverData(i);
-        console.log(i);
       })
       .on("mouseout", () => setHoverData(null));
 
@@ -198,7 +196,7 @@ const Statistics: React.FC = () => {
 
   // handle the change of the <Select> options
   const handleChange = (option: SelectType | null, type: string) => {
-    if (option) setQuery(String(option.value).toLowerCase());
+    if (option) setQuery(String(option.value));
     if (type === "year") {
       setYear(option?.value as string);
       setCountry(null);
@@ -258,32 +256,38 @@ const Statistics: React.FC = () => {
       </Grid>
       {hoverData && (
         <Grid pl={10}>
-          {hoverData[0] && <Typography variant="h6">{hoverData[0]}</Typography>}
+          {hoverData[0] && (
+            <Typography variant="h5" pb={2}>
+              {hoverData[0]}
+            </Typography>
+          )}
           {hoverData[5] && (
-            <Typography variant="body2">
+            <Typography variant="body1">
               Performer: {`${hoverData[5]}`}
             </Typography>
           )}
           {hoverData[6] && (
-            <Typography variant="body2">Song: {`${hoverData[6]}`}</Typography>
+            <Typography variant="body1">Song: {`${hoverData[6]}`}</Typography>
           )}
           {hoverData[4] && (
-            <Typography variant="body2">
+            <Typography variant="body1">
               Final Position: {`${hoverData[4]}`}
             </Typography>
           )}
-          {hoverData[1] && (
-            <Typography variant="body2">
+          {hoverData[1] ? (
+            <Typography variant="body1">
               Total points: {hoverData[1]}
             </Typography>
+          ) : (
+            ""
           )}
-          {hoverData[2] || hoverData[2] !== 0 ? (
-            <Typography variant="body2">Jury: {hoverData[2]}</Typography>
+          {hoverData[2] ? (
+            <Typography variant="body1">Jury: {hoverData[2]}</Typography>
           ) : (
             ""
           )}
           {hoverData[3] || hoverData[2] !== 0 ? (
-            <Typography variant="body2">Audience: {hoverData[3]}</Typography>
+            <Typography variant="body1">Audience: {hoverData[3]}</Typography>
           ) : (
             ""
           )}
