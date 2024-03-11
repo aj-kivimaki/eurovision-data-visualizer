@@ -23,7 +23,7 @@ const ArtistCard = (props: ArtistProps) => {
   const videoId = youtubeURL?.split("v=")[1];
   const thumbnailAddress = `https://img.youtube.com/vi/${videoId}/0.jpg`;
   const composersProcess: string[] = composers?.split(";") ?? [];
-  const flagUrl: string = `https://flagsapi.com/${countryId?.toUpperCase()}/flat/32.png`; //Docs: https://flagsapi.com/#body
+  const flagUrl: string = `https://flagsapi.com/${countryId?.toUpperCase()}/flat/24.png`; //Docs: https://flagsapi.com/#body
 
   const formatComposers = (composers: string[]): string => {
     let output = "";
@@ -44,7 +44,7 @@ const ArtistCard = (props: ArtistProps) => {
   };
 
   const card = (
-    <CardContent>
+    <CardContent sx={{p:0}}>
       <Link
         to={{
           pathname: `/artist/${artistName.toLowerCase()}`,
@@ -59,14 +59,27 @@ const ArtistCard = (props: ArtistProps) => {
           image={thumbnailAddress}
         />
       </Link>
-      <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-        <Typography variant="h4">{artistName} </Typography>
-        <img src={flagUrl} alt={artistCountry} />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.25rem",
+          mt: "1rem",
+          px:"1rem"
+        }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+          {songName}
+        </Typography>
+        <Typography variant="h6">{artistName} </Typography>
+        <Typography sx={{ fontStyle: "italic" }}>
+          ({formatComposers(composersProcess)})
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <Typography>{artistCountry}</Typography>
+          <img src={flagUrl} alt={artistCountry} />
+        </Box>
       </Box>
-      <Typography>{songName}</Typography>
-      <Typography sx={{ fontStyle: "italic" }}>
-        ({formatComposers(composersProcess)})
-      </Typography>
     </CardContent>
   );
 
