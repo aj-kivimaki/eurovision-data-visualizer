@@ -1,17 +1,7 @@
-import { useState } from "react";
-import {
-  AppBar,
-  Box,
-  Typography,
-  TextField,
-  Toolbar,
-  InputAdornment
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { Link } from "react-router-dom";
+import { AppBar, Box, Typography, Toolbar } from "@mui/material";
 
 const NavBar: React.FC = () => {
-  const [isFocused, setIsFocused] = useState<boolean>(false);
-
   return (
     <Box>
       <AppBar
@@ -21,29 +11,12 @@ const NavBar: React.FC = () => {
         <Toolbar
           sx={{ display: "flex", justifyContent: "space-between", my: 1 }}
         >
-          <Typography noWrap={true} sx={{ flexBasis: "33%" }}>
-            Eurovision Data Visualizer
-          </Typography>
-          <TextField
-            label="Search"
-            variant="outlined" 
-            focused={isFocused}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon
-                    sx={{ color: isFocused ? "primary.main" : "#FFFFFF" }}
-                  />
-                </InputAdornment>
-              ),
-            }}
-            InputLabelProps={{ sx: { color: "#FFFFFF" } }}
-          />
-          <Typography sx={{ flexBasis: "33%", textAlign: "right" }}>
-            STATISTICS
-          </Typography>
+          <Link to={"/"}>
+            <Typography noWrap={true}>Eurovision Data Visualizer</Typography>
+          </Link>
+          <Link to={"/statistics"}>
+            <Typography sx={{ textAlign: "right" }}>STATISTICS</Typography>
+          </Link>
         </Toolbar>
       </AppBar>
     </Box>
