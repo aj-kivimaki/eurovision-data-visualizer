@@ -8,5 +8,7 @@
   - routes
     - eurovision.ts
   - utils
+    - logger.ts
     - errorHandling.ts
+    - metrics.ts
   - index.ts

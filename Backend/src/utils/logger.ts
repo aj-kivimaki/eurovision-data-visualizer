@@ -11,8 +11,8 @@ const logger = winston.createLogger({
     winston.format.simple()
   ),
   transports: [
-    new winston.transports.Console(),
-    // new winston.transports.File({ filename: "logfile.log" }),
+    // new winston.transports.Console(),
+    new winston.transports.File({ filename: "logfile.log" }),
     /*
     new MongoDB({
       db: process.env.MONGO_URL,
