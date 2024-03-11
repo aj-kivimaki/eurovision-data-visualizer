@@ -59,9 +59,18 @@ const ArtistCard = (props: ArtistProps) => {
           image={thumbnailAddress}
         />
       </Link>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: "0.25rem", mt:"1rem" }}>
-        <Typography variant="h5" sx={{fontWeight:"bold"}}>{songName}</Typography>
-        <Typography variant="h6" >{artistName} </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.25rem",
+          mt: "1rem",
+        }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+          {songName}
+        </Typography>
+        <Typography variant="h6">{artistName} </Typography>
         <Typography sx={{ fontStyle: "italic" }}>
           ({formatComposers(composersProcess)})
         </Typography>
